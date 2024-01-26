@@ -15,8 +15,12 @@ public class HttpResponse {
         this.os = os;
     }
 
-    public void write(String outString) throws IOException {
-        os.write(outString.getBytes());
+    public void sendOK(String body) throws IOException {
+        String response = "HTTP/1.1 200 OK\r\n" +
+                "Content-Length: " + body.length() + "\r\n" +
+                "\r\n" +
+                body;
+        this.os.write(response.getBytes());
+        this.os.flush();
     }
-
 }

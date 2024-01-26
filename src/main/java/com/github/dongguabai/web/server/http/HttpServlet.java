@@ -6,9 +6,6 @@ package com.github.dongguabai.web.server.http;
  */
 public abstract class HttpServlet {
 
-    /**
-     * Does nothing, because this is an abstract class.
-     */
     public HttpServlet() {
         // TODO
     }
@@ -29,4 +26,5 @@ public abstract class HttpServlet {
     public abstract void doGet(HttpRequest request, HttpResponse response) throws Exception;
 
     public abstract void doPost(HttpRequest request, HttpResponse response) throws Exception;
+
 }
