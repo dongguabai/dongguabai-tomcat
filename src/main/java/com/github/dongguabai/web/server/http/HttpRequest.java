@@ -32,7 +32,6 @@ public class HttpRequest {
                 //System.out.println(content);
                 String line = content.split("\\n")[0];
                 String[] arr = line.split("\\s");
-                //获取方法参数也可以这么解析，这里就不演示了
                 this.method = arr[0];
                 this.url = arr[1].split("\\?")[0];
 

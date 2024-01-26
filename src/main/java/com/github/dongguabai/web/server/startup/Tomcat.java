@@ -1,10 +1,10 @@
 package com.github.dongguabai.web.server.startup;
 
 import com.github.dongguabai.web.server.conf.PropertiesLoader;
-import com.github.dongguabai.web.server.constant.PropertiesConstant;
+import com.github.dongguabai.web.server.conf.ThreadPoolManager;
 import com.github.dongguabai.web.server.http.HttpRequest;
 import com.github.dongguabai.web.server.http.HttpResponse;
-import com.github.dongguabai.web.server.http.HttpServlet;
+import com.github.dongguabai.web.server.servlet.ServletManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,18 +14,6 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.github.dongguabai.web.server.constant.PropertiesConstant.SERVER_MAPPING_PREFFIX;
 
 /**
  * @author dongguabai
@@ -41,18 +29,9 @@ public class Tomcat {
 
     private PropertiesLoader propertiesLoader;
 
-    private Map<String, HttpServlet> servletMapping = new HashMap<>();
+    private ServletManager servletManager;
 
-    private ExecutorService executorService;
-
-    ThreadFactory namedThreadFactory = new ThreadFactory() {
-        private final AtomicInteger poolNumber = new AtomicInteger(0);
-
-        @Override
-        public Thread newThread(Runnable r) {
-            return new Thread(r, "dongguabai-server-" + poolNumber.getAndIncrement());
-        }
-    };
+    private ThreadPoolManager threadPoolManager;
 
     private Tomcat() {
     }
@@ -66,46 +45,17 @@ public class Tomcat {
         int serverPort = propertiesLoader.getServerPort();
         serverPort = serverPort == -1 ? defaultPort : serverPort;
         server = new ServerSocket(serverPort);
-        // 获取线程池的配置
-        int corePoolSize = propertiesLoader.getThreadPoolCorePoolSize();
-        corePoolSize = corePoolSize == -1 ? 10 : corePoolSize;
-        int maximumPoolSize = propertiesLoader.getThreadPoolMaximumPoolSize();
-        maximumPoolSize = maximumPoolSize == -1 ? 100 : maximumPoolSize;
-        long keepAliveTime = propertiesLoader.getThreadPoolKeepAliveTime();
-        keepAliveTime = keepAliveTime == -1 ? 60 : keepAliveTime;
-        int queueCapacity = propertiesLoader.getThreadPoolQueueCapacity();
-        queueCapacity = queueCapacity == -1 ? 500 : queueCapacity;
-        String rejectionPolicy = propertiesLoader.getThreadPoolRejectionPolicy();
-        RejectedExecutionHandler handler;
-        switch (rejectionPolicy) {
-            case PropertiesConstant.REJECTION_POLICY_CALLER_RUNS:
-                handler = new ThreadPoolExecutor.CallerRunsPolicy();
-                break;
-            case PropertiesConstant.REJECTION_POLICY_ABORT:
-                handler = new ThreadPoolExecutor.AbortPolicy();
-                break;
-            case PropertiesConstant.REJECTION_POLICY_DISCARD_OLDEST:
-                handler = new ThreadPoolExecutor.DiscardOldestPolicy();
-                break;
-            case PropertiesConstant.REJECTION_POLICY_DISCARD:
-                handler = new ThreadPoolExecutor.DiscardPolicy();
-                break;
-            default:
-                handler = new ThreadPoolExecutor.CallerRunsPolicy();
-                break;
-        }
-        BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(queueCapacity);
-        executorService = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue, namedThreadFactory, handler);
         LOGGER.info("Tomcat has started, listening on port: {}", serverPort);
         while (true) {
             Socket socket = server.accept();
-            executorService.execute(() -> process(socket));
+            threadPoolManager.execute(() -> process(socket));
         }
     }
 
     private void init() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         propertiesLoader = new PropertiesLoader();
-        servletMapping = getServletMappings();
+        servletManager = new ServletManager(propertiesLoader);
+        threadPoolManager = new ThreadPoolManager(propertiesLoader);
     }
 
     private void process(Socket client) {
@@ -117,8 +67,8 @@ public class Tomcat {
                 //实现动态调用doGet/doPost方法，并且能够自定义返回结果
                 //拿到用户请求的url
                 String url = request.getUrl();
-                if (servletMapping.containsKey(url)) {
-                    servletMapping.get(request.getUrl()).service(request, response);
+                if (servletManager.containsServlet(url)) {
+                    servletManager.getServlet(url).service(request, response);
                 } else {
                     sendNotFound(outputStream);
                 }
@@ -129,20 +79,6 @@ public class Tomcat {
             e.printStackTrace();
         }
 
-    }
-
-    public Map<String, HttpServlet> getServletMappings() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        Map<String, HttpServlet> mappings = new HashMap<>();
-        for (String key : propertiesLoader.stringPropertyNames()) {
-            if (key.startsWith(SERVER_MAPPING_PREFFIX)) {
-                String path = key.substring(SERVER_MAPPING_PREFFIX.length());
-                String servletClassName = propertiesLoader.getProperty(key);
-                Class servletClass = Class.forName(servletClassName);
-                HttpServlet servlet = (HttpServlet) servletClass.getDeclaredConstructor().newInstance();
-                mappings.put(path, servlet);
-            }
-        }
-        return mappings;
     }
 
     public void sendNotFound(OutputStream outputStream) throws IOException {
