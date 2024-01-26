@@ -1,7 +1,11 @@
 package com.github.dongguabai.web.server.http;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author dongguabai
@@ -10,31 +14,60 @@ import java.io.InputStream;
 public class HttpRequest {
 
     private String method;
+
     private String url;
 
-    public HttpRequest(InputStream is) {
-        String content = "";
-        byte[] buff = new byte[1024];
-        int len = 0;
-        try {
-            if ((len = is.read(buff)) > 0) {
-                content = new String(buff, 0, len);
-                //content
-//                GET /web/user/query.json?name=zhangsan HTTP/1.1
-//                User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134
-//                Accept-Language: en-US,en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3
-//                Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-//                Upgrade-Insecure-Requests: 1
-//                Accept-Encoding: gzip, deflate
-//                Host: localhost:18888
-//                Connection: Keep-Alive
-//                Cookie: expand_index=0; theme=bda-green-white
-                //System.out.println(content);
-                String line = content.split("\\n")[0];
-                String[] arr = line.split("\\s");
-                this.method = arr[0];
-                this.url = arr[1].split("\\?")[0];
+    private Map<String, String> parameters = new HashMap<>();
 
+    private Map<String, String> headers = new HashMap<>();
+
+    private Map<String, String> cookies = new HashMap<>();
+
+    private String body;
+
+    public HttpRequest(InputStream is) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line = reader.readLine();
+            String[] requestLineParts = line.split("\\s");
+            this.method = requestLineParts[0];
+            String[] urlParts = requestLineParts[1].split("\\?");
+            this.url = urlParts[0];
+            if (urlParts.length > 1) {
+                String[] params = urlParts[1].split("&");
+                for (String param : params) {
+                    String[] keyValue = param.split("=");
+                    if (keyValue.length > 1) {
+                        this.parameters.put(keyValue[0], keyValue[1]);
+                    }
+                }
+            }
+            while (!(line = reader.readLine()).isEmpty()) {
+                String[] headerParts = line.split(": ");
+                this.headers.put(headerParts[0], headerParts[1]);
+                if ("Cookie".equalsIgnoreCase(headerParts[0])) {
+                    String[] cookieParts = headerParts[1].split("; ");
+                    for (String cookie : cookieParts) {
+                        String[] keyValue = cookie.split("=");
+                        if (keyValue.length > 1) {
+                            this.cookies.put(keyValue[0], keyValue[1]);
+                        }
+                    }
+                }
+            }
+            if (this.method.equalsIgnoreCase("POST")) {
+                StringBuilder bodyBuilder = new StringBuilder();
+                while (reader.ready()) {
+                    bodyBuilder.append((char) reader.read());
+                }
+                this.body = bodyBuilder.toString();
+                String[] params = this.body.split("&");
+                for (String param : params) {
+                    String[] keyValue = param.split("=");
+                    if (keyValue.length > 1) {
+                        this.parameters.put(keyValue[0], keyValue[1]);
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,4 +82,19 @@ public class HttpRequest {
         return url;
     }
 
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public String getBody() {
+        return body;
+    }
 }

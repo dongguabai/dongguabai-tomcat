@@ -58,7 +58,7 @@ public class Tomcat {
     private void process(Socket client) {
         //获取Socket对象，将Socket.getInputStream()封装成Request，Socket.getOuputStream()封装成Response
         try {
-            try (OutputStream outputStream = client.getOutputStream(); InputStream inputStream = client.getInputStream();) {
+            try (OutputStream outputStream = client.getOutputStream(); InputStream inputStream = client.getInputStream()) {
                 HttpRequest request = new HttpRequest(inputStream);
                 HttpResponse response = new HttpResponse(outputStream);
                 //实现动态调用doGet/doPost方法，并且能够自定义返回结果
@@ -75,7 +75,6 @@ public class Tomcat {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void sendNotFound(OutputStream outputStream) throws IOException {
