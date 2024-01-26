@@ -37,7 +37,7 @@ public class PropertiesLoader {
     public int getServerPort() {
         String port = webXml.getProperty(SERVER_PORT);
         if (StringUtils.isBlank(port)) {
-            return -1;
+            return PropertiesConstant.DEFAULT_PORT;
         }
         return Integer.valueOf(port);
     }

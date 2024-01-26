@@ -23,8 +23,6 @@ public class Tomcat {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Tomcat.class);
 
-    private int defaultPort = 8888;
-
     private ServerSocket server;
 
     private PropertiesLoader propertiesLoader;
@@ -43,7 +41,6 @@ public class Tomcat {
     private void start() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         init();
         int serverPort = propertiesLoader.getServerPort();
-        serverPort = serverPort == -1 ? defaultPort : serverPort;
         server = new ServerSocket(serverPort);
         LOGGER.info("Tomcat has started, listening on port: {}", serverPort);
         while (true) {

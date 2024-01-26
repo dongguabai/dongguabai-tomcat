@@ -28,4 +28,6 @@ public class PropertiesConstant {
 
     public static final String REJECTION_POLICY_DISCARD = "DiscardPolicy";
 
+    public static final int DEFAULT_PORT = 8888;
+
 }
