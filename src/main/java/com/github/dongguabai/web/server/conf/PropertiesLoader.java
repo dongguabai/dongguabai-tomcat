@@ -1,5 +1,6 @@
 package com.github.dongguabai.web.server.conf;
 
+import com.github.dongguabai.web.server.constant.PropertiesConstant;
 import com.github.dongguabai.web.server.util.StringUtils;
 
 import java.io.IOException;
@@ -43,5 +44,29 @@ public class PropertiesLoader {
 
     public Set<String> stringPropertyNames() {
         return webXml.stringPropertyNames();
+    }
+
+    public int getThreadPoolCorePoolSize() {
+        String size = webXml.getProperty(PropertiesConstant.SERVER_THREADPOOL_COREPOOLSIZE);
+        return StringUtils.isBlank(size) ? -1 : Integer.valueOf(size);
+    }
+
+    public int getThreadPoolMaximumPoolSize() {
+        String size = webXml.getProperty(PropertiesConstant.SERVER_THREADPOOL_MAXIMUMPOOLSIZE);
+        return StringUtils.isBlank(size) ? -1 : Integer.valueOf(size);
+    }
+
+    public long getThreadPoolKeepAliveTime() {
+        String time = webXml.getProperty(PropertiesConstant.SERVER_THREADPOOL_KEEPALIVETIME);
+        return StringUtils.isBlank(time) ? -1 : Long.valueOf(time);
+    }
+
+    public int getThreadPoolQueueCapacity() {
+        String capacity = webXml.getProperty(PropertiesConstant.SERVER_THREADPOOL_QUEUECAPACITY);
+        return StringUtils.isBlank(capacity) ? -1 : Integer.valueOf(capacity);
+    }
+
+    public String getThreadPoolRejectionPolicy() {
+        return StringUtils.defaultIfBlank(webXml.getProperty(PropertiesConstant.SERVER_THREADPOOL_REJECTIONPOLICY), PropertiesConstant.REJECTION_POLICY_ABORT);
     }
 }

@@ -23,6 +23,10 @@ public final class StringUtils {
         return !isBlank(cs);
     }
 
+    public static <T extends CharSequence> T defaultIfBlank(final T str, final T defaultStr) {
+        return isBlank(str) ? defaultStr : str;
+    }
+
     private StringUtils() {
     }
 }
