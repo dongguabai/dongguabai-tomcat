@@ -14,16 +14,12 @@ import java.util.Map;
 public class HttpServletRequest {
 
     private String method;
-
     private String url;
-
     private Map<String, String> parameters = new HashMap<>();
-
     private Map<String, String> headers = new HashMap<>();
-
     private Map<String, String> cookies = new HashMap<>();
-
     private String body;
+    private HttpSession session;
 
     public HttpServletRequest(InputStream is) {
         try {
@@ -72,6 +68,36 @@ public class HttpServletRequest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public HttpSession getSession() {
+        if (session == null) {
+            String sessionId = cookies.get("JSESSIONID");
+            if (sessionId != null) {
+                session = SessionManager.getSession(sessionId);
+                if (session != null) {
+                    if (session.isExpired()) {
+                        SessionManager.invalidate(sessionId);
+                        session = null;
+                    } else {
+                        session.access();
+                    }
+                }
+            }
+            if (session == null) {
+                session = SessionManager.createSession();
+                cookies.put("JSESSIONID", session.getId());
+            }
+        } else {
+            if (session.isExpired()) {
+                SessionManager.invalidate(session.getId());
+                session = SessionManager.createSession();
+                cookies.put("JSESSIONID", session.getId());
+            } else {
+                session.access();
+            }
+        }
+        return session;
     }
 
     public String getMethod() {
