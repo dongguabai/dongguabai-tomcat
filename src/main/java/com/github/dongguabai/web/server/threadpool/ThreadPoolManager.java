@@ -1,5 +1,6 @@
-package com.github.dongguabai.web.server.conf;
+package com.github.dongguabai.web.server.threadpool;
 
+import com.github.dongguabai.web.server.conf.PropertiesLoader;
 import com.github.dongguabai.web.server.constant.PropertiesConstant;
 
 import java.util.concurrent.BlockingQueue;

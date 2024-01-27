@@ -1,7 +1,8 @@
 package com.github.dongguabai.web.server.startup;
 
 import com.github.dongguabai.web.server.conf.PropertiesLoader;
-import com.github.dongguabai.web.server.conf.ThreadPoolManager;
+import com.github.dongguabai.web.server.exp.ServerException;
+import com.github.dongguabai.web.server.threadpool.ThreadPoolManager;
 import com.github.dongguabai.web.server.http.HttpRequest;
 import com.github.dongguabai.web.server.http.HttpResponse;
 import com.github.dongguabai.web.server.servlet.ServletManager;
@@ -34,18 +35,34 @@ public class Tomcat {
     private Tomcat() {
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws ServerException {
         new Tomcat().start();
     }
 
-    private void start() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        init();
+    private void start() throws ServerException {
+        try {
+            init();
+        } catch (ClassNotFoundException e) {
+            throw new ServerException("Failed to initialize Tomcat: Class not found.", e);
+        } catch (NoSuchMethodException e) {
+            throw new ServerException("Failed to initialize Tomcat: No such method.", e);
+        } catch (InvocationTargetException e) {
+            throw new ServerException("Failed to initialize Tomcat: Error invoking method.", e);
+        } catch (InstantiationException e) {
+            throw new ServerException("Failed to initialize Tomcat: Error instantiating class.", e);
+        } catch (IllegalAccessException e) {
+            throw new ServerException("Failed to initialize Tomcat: Illegal access.", e);
+        }
         int serverPort = propertiesLoader.getServerPort();
-        server = new ServerSocket(serverPort);
-        LOGGER.info("Tomcat has started, listening on port: {}", serverPort);
-        while (true) {
-            Socket socket = server.accept();
-            threadPoolManager.execute(() -> process(socket));
+        try {
+            server = new ServerSocket(serverPort);
+            LOGGER.info("Tomcat has started, listening on port: {}", serverPort);
+            while (true) {
+                Socket socket = server.accept();
+                threadPoolManager.execute(() -> process(socket));
+            }
+        } catch (IOException e) {
+            throw new ServerException("Failed to execute Tomcat: I/O error.", e);
         }
     }
 

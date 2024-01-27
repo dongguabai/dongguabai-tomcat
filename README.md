@@ -1,5 +1,5 @@
-# Mini-Tomcat
-目标：开发一个用于学习的高性能 Servlet Web 容器。
+# dongguabai-Tomcat
+【学习】自己动手写一个 Tomcat
 
 ## 版本更新日志
 ### 2024-01-27
