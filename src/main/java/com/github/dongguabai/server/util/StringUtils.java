@@ -1,4 +1,4 @@
-package com.github.dongguabai.web.server.util;
+package com.github.dongguabai.server.util;
 
 /**
  * @author dongguabai

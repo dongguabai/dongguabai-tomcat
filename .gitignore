@@ -61,7 +61,7 @@ compiler/gradle.properties
 compiler/build/*
 compiler/.gradle/*
 
-# Tomcat
+# TomcatServer
 .extract
 .java-version
 

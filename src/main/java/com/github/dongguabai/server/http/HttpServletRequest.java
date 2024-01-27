@@ -1,4 +1,4 @@
-package com.github.dongguabai.web.server.http;
+package com.github.dongguabai.server.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @author dongguabai
  * @date 2024-01-26 15:25
  */
-public class HttpRequest {
+public class HttpServletRequest {
 
     private String method;
 
@@ -25,7 +25,7 @@ public class HttpRequest {
 
     private String body;
 
-    public HttpRequest(InputStream is) {
+    public HttpServletRequest(InputStream is) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line = reader.readLine();

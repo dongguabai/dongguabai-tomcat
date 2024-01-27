@@ -1,4 +1,4 @@
-package com.github.dongguabai.web.server.http;
+package com.github.dongguabai.server.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,11 +7,11 @@ import java.io.OutputStream;
  * @author dongguabai
  * @date 2024-01-26 15:25
  */
-public class HttpResponse {
+public class HttpServletResponse {
 
     private OutputStream os;
 
-    public HttpResponse(OutputStream os) {
+    public HttpServletResponse(OutputStream os) {
         this.os = os;
     }
 
