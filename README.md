@@ -13,4 +13,5 @@
   - `Engine`：负责处理 HTTP 请求
   - `Connector`：这个类负责接受和处理连接
 
+- 新增：`Session` 支持
 
