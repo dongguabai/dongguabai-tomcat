@@ -1,9 +1,9 @@
 package com.github.dongguabai.server.connector;
 
 import com.github.dongguabai.server.engine.Engine;
-import com.github.dongguabai.server.http.HttpServletRequest;
-import com.github.dongguabai.server.http.HttpServletResponse;
-import com.github.dongguabai.server.http.HttpServlet;
+import com.github.dongguabai.server.servlet.HttpServletRequest;
+import com.github.dongguabai.server.servlet.HttpServletResponse;
+import com.github.dongguabai.server.servlet.HttpServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

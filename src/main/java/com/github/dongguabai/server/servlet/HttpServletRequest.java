@@ -1,4 +1,4 @@
-package com.github.dongguabai.server.http;
+package com.github.dongguabai.server.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.github.dongguabai.server.http;
+package com.github.dongguabai.server.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
