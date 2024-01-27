@@ -17,6 +17,6 @@ public class Demo2Servlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        response.sendOK("this is demo2 test");
+        response.sendOK("this is demo2 test：" + request.getBody());
     }
 }

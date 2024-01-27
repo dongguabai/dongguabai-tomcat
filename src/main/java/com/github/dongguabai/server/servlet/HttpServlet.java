@@ -11,16 +11,18 @@ public abstract class HttpServlet {
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        //由Servie方法觉得是执行post还是get方法
-        if ("GET".equalsIgnoreCase(request.getMethod())) {
-            doGet(request, response);
-        } else if ("POST".equalsIgnoreCase(request.getMethod())) {
-            doPost(request, response);
+        try {
+            if ("GET".equalsIgnoreCase(request.getMethod())) {
+                doGet(request, response);
+            } else if ("POST".equalsIgnoreCase(request.getMethod())) {
+                doPost(request, response);
+            }
+        } finally {
+            destroy(request, response);
         }
     }
 
     public void destroy(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
     }
 
     public abstract void doGet(HttpServletRequest request, HttpServletResponse response) throws Exception;
