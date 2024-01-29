@@ -1,7 +1,9 @@
 package com.github.dongguabai.server.engine;
 
-import com.github.dongguabai.server.exp.ServerException;
+import com.github.dongguabai.server.servlet.Filter;
 import com.github.dongguabai.server.servlet.HttpServlet;
+
+import java.util.List;
 
 /**
  * @author Dongguabai
@@ -10,6 +12,7 @@ import com.github.dongguabai.server.servlet.HttpServlet;
  */
 public interface Engine {
 
-    HttpServlet match(String url) throws ServerException;
+    HttpServlet match(String url);
 
+    List<Filter> getFilters(String url);
 }

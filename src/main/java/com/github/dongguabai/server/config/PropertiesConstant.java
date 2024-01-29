@@ -12,6 +12,8 @@ public class PropertiesConstant {
 
         public static final String SERVER_MAPPING_PREFFIX = "server.mapping.";
 
+        public static final String SERVER_FILTER_PREFFIX = "server.filter.";
+
         public static final String SERVER_THREADPOOL_COREPOOLSIZE = "server.threadpool.corePoolSize";
 
         public static final String SERVER_THREADPOOL_MAXIMUMPOOLSIZE = "server.threadpool.maximumPoolSize";

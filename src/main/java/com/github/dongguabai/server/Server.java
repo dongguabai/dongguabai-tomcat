@@ -1,6 +1,6 @@
 package com.github.dongguabai.server;
 
-import com.github.dongguabai.server.exp.ServerException;
+import com.github.dongguabai.server.exp.ServletException;
 
 /**
  * @author dongguabai
@@ -8,5 +8,5 @@ import com.github.dongguabai.server.exp.ServerException;
  */
 public interface Server {
 
-    void start() throws ServerException;
+    void start() throws ServletException;
 }

@@ -8,7 +8,7 @@ import com.github.dongguabai.server.connector.Connector;
 import com.github.dongguabai.server.connector.NioConnector;
 import com.github.dongguabai.server.engine.Engine;
 import com.github.dongguabai.server.engine.ServletEngine;
-import com.github.dongguabai.server.exp.ServerException;
+import com.github.dongguabai.server.exp.ServletException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,21 +43,21 @@ public class TomcatServer implements Server {
     private ExecutorService executorService;
 
     @Override
-    public void start() throws ServerException {
+    public void start() throws ServletException {
         try {
             init();
         } catch (IOException e) {
-            throw new ServerException("Failed to execute TomcatServer: I/O error.", e);
+            throw new ServletException("Failed to execute TomcatServer: I/O error.", e);
         } catch (ClassNotFoundException e) {
-            throw new ServerException("Failed to initialize Tomcat: Class not found.", e);
+            throw new ServletException("Failed to initialize Tomcat: Class not found.", e);
         } catch (NoSuchMethodException e) {
-            throw new ServerException("Failed to initialize Tomcat: No such method.", e);
+            throw new ServletException("Failed to initialize Tomcat: No such method.", e);
         } catch (InvocationTargetException e) {
-            throw new ServerException("Failed to initialize Tomcat: Error invoking method.", e);
+            throw new ServletException("Failed to initialize Tomcat: Error invoking method.", e);
         } catch (InstantiationException e) {
-            throw new ServerException("Failed to initialize Tomcat: Error instantiating class.", e);
+            throw new ServletException("Failed to initialize Tomcat: Error instantiating class.", e);
         } catch (IllegalAccessException e) {
-            throw new ServerException("Failed to initialize Tomcat: Illegal access.", e);
+            throw new ServletException("Failed to initialize Tomcat: Illegal access.", e);
         }
         try {
             int serverPort = configLoader.getServerPort();
@@ -75,7 +75,7 @@ public class TomcatServer implements Server {
             }
             LOGGER.info("TomcatServer has started with {}, listening on port: {}", connectorType, serverPort);
         } catch (IOException e) {
-            throw new ServerException("Failed to initialize Connector: I/O error.", e);
+            throw new ServletException("Failed to initialize Connector: I/O error.", e);
         }
         while (true) {
             try {

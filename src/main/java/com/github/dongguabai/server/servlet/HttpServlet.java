@@ -1,5 +1,9 @@
 package com.github.dongguabai.server.servlet;
 
+import com.github.dongguabai.server.exp.ServletException;
+
+import java.io.IOException;
+
 /**
  * @author dongguabai
  * @date 2024-01-26 15:25
@@ -10,7 +14,7 @@ public abstract class HttpServlet {
         // TODO
     }
 
-    public void service(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             if ("GET".equalsIgnoreCase(request.getMethod())) {
                 doGet(request, response);
@@ -18,15 +22,15 @@ public abstract class HttpServlet {
                 doPost(request, response);
             }
         } finally {
-            destroy(request, response);
+            destroy();
         }
     }
 
-    public void destroy(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void destroy() {
     }
 
-    public abstract void doGet(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    public abstract void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;
 
-    public abstract void doPost(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    public abstract void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;
 
 }

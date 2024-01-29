@@ -1,8 +1,11 @@
 package com.github.dongguabai.test;
 
+import com.github.dongguabai.server.exp.ServletException;
+import com.github.dongguabai.server.servlet.HttpServlet;
 import com.github.dongguabai.server.servlet.HttpServletRequest;
 import com.github.dongguabai.server.servlet.HttpServletResponse;
-import com.github.dongguabai.server.servlet.HttpServlet;
+
+import java.io.IOException;
 
 /**
  * @author dongguabai
@@ -11,12 +14,12 @@ import com.github.dongguabai.server.servlet.HttpServlet;
 public class Demo2Servlet extends HttpServlet {
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         doPost(request, response);
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        response.sendOK("this is demo2 test：" + request.getBody());
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        response.sendJson("this is demo2 test：" + request.getBody());
     }
 }

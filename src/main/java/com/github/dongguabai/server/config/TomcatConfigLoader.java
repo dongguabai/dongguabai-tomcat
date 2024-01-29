@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.github.dongguabai.server.config.PropertiesConstant.Config.SERVER_FILTER_PREFFIX;
 import static com.github.dongguabai.server.config.PropertiesConstant.Config.SERVER_MAPPING_PREFFIX;
 import static com.github.dongguabai.server.config.PropertiesConstant.Config.SERVER_PORT;
 
@@ -59,6 +60,19 @@ public class TomcatConfigLoader extends AbstractServerConfigLoader {
         for (String key : properties.stringPropertyNames()) {
             if (key.startsWith(SERVER_MAPPING_PREFFIX)) {
                 String path = key.substring(SERVER_MAPPING_PREFFIX.length());
+                String className = properties.getProperty(key);
+                mappings.put(path, className);
+            }
+        }
+        return mappings;
+    }
+
+    @Override
+    public Map<String, String> getFilterMappings() {
+        Map<String, String> mappings = new HashMap<>();
+        for (String key : properties.stringPropertyNames()) {
+            if (key.startsWith(SERVER_FILTER_PREFFIX)) {
+                String path = key.substring(SERVER_FILTER_PREFFIX.length());
                 String className = properties.getProperty(key);
                 mappings.put(path, className);
             }

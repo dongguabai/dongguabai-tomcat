@@ -27,7 +27,6 @@ public interface ServerConfigLoader {
 
     int getThreadPoolKeepAliveTime();
 
-
     int getThreadPoolQueueCapacity();
 
     String getThreadPoolRejectionPolicy();
@@ -35,6 +34,8 @@ public interface ServerConfigLoader {
     RejectedExecutionHandler getThreadPoolRejectionPolicyHandler();
 
     Map<String, String> getServletMappings();
+
+    Map<String, String> getFilterMappings();
 
     int getSoTimeout();
 

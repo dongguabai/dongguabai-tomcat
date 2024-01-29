@@ -16,8 +16,19 @@ public class HttpServletResponse {
         this.os = os;
     }
 
-    public void sendOK(String body) throws IOException {
-        byte[] bodyBytes = body.getBytes(StandardCharsets.UTF_8);
+    public void sendJson(String json) throws IOException {
+        byte[] bodyBytes = json.getBytes(StandardCharsets.UTF_8);
+        String response = "HTTP/1.1 200 OK\r\n" +
+                "Content-Type: application/json; charset=UTF-8\r\n" +
+                "Content-Length: " + bodyBytes.length + "\r\n" +
+                "\r\n";
+        this.os.write(response.getBytes(StandardCharsets.UTF_8));
+        this.os.write(bodyBytes);
+        this.os.flush();
+    }
+
+    public void sendHtml(String html) throws IOException {
+        byte[] bodyBytes = html.getBytes(StandardCharsets.UTF_8);
         String response = "HTTP/1.1 200 OK\r\n" +
                 "Content-Type: text/html; charset=UTF-8\r\n" +
                 "Content-Length: " + bodyBytes.length + "\r\n" +

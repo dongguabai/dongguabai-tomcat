@@ -8,10 +8,10 @@
 ### 2024-01-28
 
 - 重构：基本组件划分
-  - `Server`：负责初始化和启动服务器
-  - `Config`：负责加载服务器的配置
-  - `Engine`：负责处理 HTTP 请求
-  - `Connector`：这个类负责接受和处理连接
+  - `Server`：负责初始化和启动服务器，管理服务器的生命周期
+  - `Config`：负责加载和管理服务器的配置信息
+  - `Engine`：负责处理 HTTP 请求，包括路由请求到正确的 Servlet，并管理 Servlet 和 Filter 的生命周期。
+  - `Connector`：负责接受和处理连接
 
 - 新增：`Session` 支持
 

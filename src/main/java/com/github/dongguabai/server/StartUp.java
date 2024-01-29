@@ -1,6 +1,6 @@
 package com.github.dongguabai.server;
 
-import com.github.dongguabai.server.exp.ServerException;
+import com.github.dongguabai.server.exp.ServletException;
 
 /**
  * @author dongguabai
@@ -8,7 +8,7 @@ import com.github.dongguabai.server.exp.ServerException;
  */
 public class StartUp {
 
-    public static void main(String[] args) throws ServerException {
+    public static void main(String[] args) throws ServletException {
         new TomcatServer().start();
     }
 }
