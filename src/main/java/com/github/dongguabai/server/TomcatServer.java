@@ -77,14 +77,7 @@ public class TomcatServer implements Server {
         } catch (IOException e) {
             throw new ServletException("Failed to initialize Connector: I/O error.", e);
         }
-        while (true) {
-            try {
-                Object connection = connector.acceptConnection();
-                executorService.execute(() -> connector.process(connection));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        connector.process(executorService);
     }
 
     private void init() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {

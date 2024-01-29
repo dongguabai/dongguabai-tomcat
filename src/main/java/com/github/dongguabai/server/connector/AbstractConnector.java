@@ -1,7 +1,6 @@
 package com.github.dongguabai.server.connector;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import com.github.dongguabai.server.engine.Engine;
 
 /**
  * @author dongguabai
@@ -9,11 +8,15 @@ import java.io.OutputStream;
  */
 public abstract class AbstractConnector implements Connector {
 
-    protected void sendNotFound(OutputStream outputStream) throws IOException {
-        String response = "HTTP/1.1 404 Not Found\r\n" +
-                "Content-Length: 0\r\n" +
-                "\r\n";
-        outputStream.write(response.getBytes());
-        outputStream.flush();
+    protected final Engine servletEngine;
+
+    protected final int serverPort;
+
+    protected final int soTimeout;
+
+    protected AbstractConnector(Engine servletEngine, int serverPort, int soTimeout) {
+        this.servletEngine = servletEngine;
+        this.serverPort = serverPort;
+        this.soTimeout = soTimeout;
     }
 }

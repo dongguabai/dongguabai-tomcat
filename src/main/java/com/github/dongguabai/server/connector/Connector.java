@@ -1,6 +1,6 @@
 package com.github.dongguabai.server.connector;
 
-import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author dongguabai
@@ -8,8 +8,6 @@ import java.io.IOException;
  */
 public interface Connector {
 
-    void process(Object connection);
-
-    Object acceptConnection() throws IOException;
+    void process(ExecutorService executorService);
 
 }

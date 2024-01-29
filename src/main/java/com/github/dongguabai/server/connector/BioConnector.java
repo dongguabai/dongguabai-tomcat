@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author dongguabai
@@ -24,19 +25,26 @@ public class BioConnector extends AbstractConnector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BioConnector.class);
 
-    private final Engine servletEngine;
-
     private ServerSocket server;
 
     public BioConnector(Engine servletEngine, int serverPort, int soTimeout) throws IOException {
-        this.servletEngine = servletEngine;
+        super(servletEngine, serverPort, soTimeout);
         this.server = new ServerSocket(serverPort);
         this.server.setSoTimeout(soTimeout);
     }
 
-    @Override
-    public void process(Object connection) {
-        Socket socket = (Socket) connection;
+    public void process(ExecutorService executorService) {
+        while (true) {
+            try {
+                Socket socket = server.accept();
+                executorService.submit(() -> handleRequest(socket));
+            } catch (IOException e) {
+                LOGGER.error("Error accepting connection", e);
+            }
+        }
+    }
+
+    private void handleRequest(Socket socket) {
         try {
             try (OutputStream outputStream = socket.getOutputStream(); InputStream inputStream = socket.getInputStream()) {
                 HttpServletRequest request = new HttpServletRequest(inputStream);
@@ -51,6 +59,7 @@ public class BioConnector extends AbstractConnector {
                 } else {
                     sendNotFound(outputStream);
                 }
+            } finally {
                 socket.close();
             }
         } catch (Exception e) {
@@ -58,8 +67,11 @@ public class BioConnector extends AbstractConnector {
         }
     }
 
-    @Override
-    public Object acceptConnection() throws IOException {
-        return server.accept();
+    private void sendNotFound(OutputStream outputStream) throws IOException {
+        String response = "HTTP/1.1 404 Not Found\r\n" +
+                "Content-Length: 0\r\n" +
+                "\r\n";
+        outputStream.write(response.getBytes());
+        outputStream.flush();
     }
 }
