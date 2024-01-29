@@ -10,8 +10,11 @@ import java.util.Map;
 public class HttpSession {
 
     private String id;
+
     private Map<String, Object> attributes = new HashMap<>();
+
     private long lastAccessedTime;
+
     private int maxInactiveInterval;
 
     public HttpSession(String id) {
